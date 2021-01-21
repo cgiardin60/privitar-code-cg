@@ -1,0 +1,20 @@
+[Unit]
+Description=Privitar publisher version %I
+After=NetworkManager.service postgresql.service
+Requires=postgresql.service
+
+[Service]
+User=privitar
+Group=privitar
+WorkingDirectory=/opt/app/privitar
+# Environment="CATALINA_OUT=/var/log/privitar/catalina-%I.out"
+# Environment="CATALINA_PID=/run/privitar/privitar-%I.pid"
+# PIDFile=/run/privitar/privitar-%I.pid
+
+Type=forking
+
+ExecStart=/opt/app/privitar/policy-manager-%I/server/bin/startup.sh
+ExecStop=/opt/app/privitar/policy-manager-%I/server/bin/shutdown.sh
+
+[Install]
+WantedBy=multi-user.target

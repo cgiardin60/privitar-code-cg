@@ -1,0 +1,27 @@
+[Unit]
+Description=Privitar publisher
+After=NetworkManager.service
+
+[Service]
+User=privitar
+Group=privitar
+WorkingDirectory=/usr/local/privitar
+Type=forking
+
+ExecStart=/usr/local/privitar/privitar-publisher-3.2.0/server/bin/startup.sh
+## Other examples making direct use of the catalins.sh script:
+
+## Same as using the startup script (except for OS/400)
+# ExecStart=/usr/local/privitar/privitar-publisher-3.2.0/server/bin/catalina.sh start
+
+## Same as above but with fewer checks. Logs are not saved to catalina.out
+## Instead, logs will be managed by journalctl 
+##   (journalctl -u  privitar-publisher.service)
+# ExecStart=/usr/local/privitar/privitar-publisher-3.2.0/server/bin/catalina.sh run
+
+ExecStop=/usr/local/privitar/privitar-publisher-3.2.0/server/bin/shutdown.sh
+## Same as using the shutdown script (except for OS/400)
+# ExecStart=/usr/local/privitar/privitar-publisher-3.2.0/server/bin/catalina.sh stop
+
+[Install]
+WantedBy=multi-user.target

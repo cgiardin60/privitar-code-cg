@@ -1,0 +1,25 @@
+[Unit]
+Description = Privitar on Demand: port %I
+After=NetworkManager.service
+
+[Service]
+User = ec2-user
+Type = simple
+Restart = always
+RestartSec = 1
+SuccessExitStatus = 143
+Environment = "POD_PROPERTIES_FILE=/usr/local/privitar/pod/application.properties"
+Environment = "POD_HOME=/usr/local/privitar/pod"
+Environment = "LOG_PATH=/var/log/privitar"
+Environment = "POD_JDBC=/usr/local/privitar/pod/postgresql-42.2.6.jar"
+Environment = "POD_JAR_FILE=/usr/local/privitar/pod/privitar-pod-server-3.2.0.jar"
+WorkingDirectory=/usr/local/privitar/pod
+
+# Test the no. of file descriptors available
+ExecStartPre=-/bin/sh -c 'NFILES=`ulimit -n`; [ $NFILES -lt 3000 ] && /bin/echo -e "\n=========\n*** Warning: ulimit $NFILES for number of files may be too small ***\n=========\n"'
+
+ExecStart = /usr/bin/java -Dloader.path=${POD_JDBC} -Djava.security.egd=file:/dev/./urandom -Dserver.port=%I -jar ${POD_JAR_FILE} --spring.config.location=${POD_PROPERTIES_FILE}
+
+[Install]
+WantedBy=multi-user.target
+
